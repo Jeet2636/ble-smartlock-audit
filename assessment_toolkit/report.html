@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLE Security Assessment &mdash; SmartLock-AX300</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; background: #0f1115; color: #e6e8eb; line-height: 1.5; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+  header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  header .meta { color: #9aa0a6; font-size: 0.9rem; }
+  header .meta code { color: #cdd3d9; }
+  .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 8px; }
+  .chip { background: #1b1f27; border: 1px solid #2a2f3a; border-radius: 999px;
+          padding: 6px 14px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  h2 { margin: 32px 0 12px; font-size: 1.2rem; border-bottom: 1px solid #2a2f3a; padding-bottom: 6px; }
+  .finding { background: #151922; border: 1px solid #262c38; border-radius: 10px;
+             padding: 16px 18px; margin-bottom: 14px; }
+  .finding-head { display: flex; align-items: center; gap: 10px; }
+  .finding-head h3 { margin: 0; font-size: 1.05rem; }
+  .badge { color: #fff; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+           text-transform: uppercase; padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+  .cvss { background: #262c38; color: #cdd3d9; font-size: 0.72rem; font-weight: 700;
+          padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+  .desc { color: #c6ccd3; margin: 10px 0 12px; }
+  dl { display: grid; grid-template-columns: 130px 1fr; gap: 4px 14px; margin: 0; font-size: 0.92rem; }
+  dt { color: #8b93a0; }
+  dd { margin: 0; }
+  dd.evidence { color: #ffd7cc; }
+  code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.86em; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #222733; vertical-align: top; }
+  th { color: #8b93a0; font-weight: 600; }
+  tr.svc td { background: #1b1f27; font-weight: 600; color: #cdd3d9; }
+  td.val { color: #ffe0a3; font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
+  footer { margin-top: 40px; color: #6b7280; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>BLE Security Assessment Report</h1>
+      <div class="meta">
+        Target: <b>SmartLock-AX300</b> &nbsp;|&nbsp; Address: <code>03996379-1D56-270C-EE6D-E8911FC95140</code><br>
+        Generated: 2026-10-06T12:29:29.282227+00:00
+      </div>
+    </header>
+
+    <div class="summary"><div class="chip"><span class="dot" style="background:#d32f2f"></span>3 High</div><div class="chip"><span class="dot" style="background:#f57c00"></span>2 Medium</div></div>
+
+    <h2>Findings</h2>
+    
+      <div class="finding">
+        <div class="finding-head"><span class="badge" style="background:#d32f2f">High</span><span class="cvss">CVSS 7.4</span><h3>Sensitive data exposed over unauthenticated read: Unlock PIN (master code)</h3></div>
+        <p class="desc">Characteristic Unlock PIN (master code) (51ff12bb-3ed8-46e5-b4f9-d64e2fec021b, handle 0) permits read with no pairing, bonding, or encryption required. Any device within radio range can read its value without authentication (leaked value: &#x27;unlock_pin=4873&#x27;).</p>
+        <dl>
+          <dt>CVSS v3.1</dt><dd>7.4 &nbsp;<code>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N</code></dd>
+          <dt>Characteristic</dt><dd><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021b</code></dd>
+          <dt>Service</dt><dd><code>a07498ca-ad5b-474e-940d-16f1fbe7e8cd</code></dd>
+          <dt>Evidence</dt><dd class="evidence">properties=[&#x27;read&#x27;]; leaked value (plaintext): &#x27;unlock_pin=4873&#x27;; bytes (hex): 756e6c6f636b5f70696e3d34383733</dd>
+          <dt>Remediation</dt><dd>Require pairing/bonding (Security Mode 1 Level 2+) before granting access to this characteristic, or move sensitive state behind an application-layer auth check performed over an authenticated channel.</dd>
+        </dl>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><span class="badge" style="background:#d32f2f">High</span><span class="cvss">CVSS 7.4</span><h3>Unauthenticated write access on Unlock command</h3></div>
+        <p class="desc">Characteristic Unlock command (51ff12bb-3ed8-46e5-b4f9-d64e2fec021f, handle 0) permits write with no pairing, bonding, or encryption required. Any device within radio range can overwrite its value without authentication.</p>
+        <dl>
+          <dt>CVSS v3.1</dt><dd>7.4 &nbsp;<code>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:N</code></dd>
+          <dt>Characteristic</dt><dd><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021f</code></dd>
+          <dt>Service</dt><dd><code>a07498ca-ad5b-474e-940d-16f1fbe7e8cd</code></dd>
+          <dt>Evidence</dt><dd class="evidence">properties=[&#x27;write&#x27;]</dd>
+          <dt>Remediation</dt><dd>Require pairing/bonding (Security Mode 1 Level 2+) before granting access to this characteristic, or move sensitive state behind an application-layer auth check performed over an authenticated channel.</dd>
+        </dl>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><span class="badge" style="background:#d32f2f">High</span><span class="cvss">CVSS 7.4</span><h3>Sensitive data exposed over unauthenticated read: Wi-Fi credentials</h3></div>
+        <p class="desc">Characteristic Wi-Fi credentials (51ff12bb-3ed8-46e5-b4f9-d64e2fec021e, handle 0) permits read with no pairing, bonding, or encryption required. Any device within radio range can read its value without authentication (leaked value: &#x27;wifi_ssid=Nirma_Home_5G;wifi_pass=hostel@2026&#x27;).</p>
+        <dl>
+          <dt>CVSS v3.1</dt><dd>7.4 &nbsp;<code>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N</code></dd>
+          <dt>Characteristic</dt><dd><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021e</code></dd>
+          <dt>Service</dt><dd><code>a07498ca-ad5b-474e-940d-16f1fbe7e8cd</code></dd>
+          <dt>Evidence</dt><dd class="evidence">properties=[&#x27;read&#x27;]; leaked value (plaintext): &#x27;wifi_ssid=Nirma_Home_5G;wifi_pass=hostel@2026&#x27;; bytes (hex): 776966695f737369643d4e69726d615f486f6d655f35473b776966695f706173733d686f7374656c4032303236</dd>
+          <dt>Remediation</dt><dd>Require pairing/bonding (Security Mode 1 Level 2+) before granting access to this characteristic, or move sensitive state behind an application-layer auth check performed over an authenticated channel.</dd>
+        </dl>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><span class="badge" style="background:#f57c00">Medium</span><span class="cvss">CVSS 4.3</span><h3>Unauthenticated read access on Device info / firmware</h3></div>
+        <p class="desc">Characteristic Device info / firmware (51ff12bb-3ed8-46e5-b4f9-d64e2fec021d, handle 0) permits read with no pairing, bonding, or encryption required. Any device within radio range can read its value without authentication (leaked value: &#x27;SmartLock-AX300;fw=2.1.4;hw=rev-C&#x27;).</p>
+        <dl>
+          <dt>CVSS v3.1</dt><dd>4.3 &nbsp;<code>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N</code></dd>
+          <dt>Characteristic</dt><dd><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021d</code></dd>
+          <dt>Service</dt><dd><code>a07498ca-ad5b-474e-940d-16f1fbe7e8cd</code></dd>
+          <dt>Evidence</dt><dd class="evidence">properties=[&#x27;read&#x27;]; leaked value (plaintext): &#x27;SmartLock-AX300;fw=2.1.4;hw=rev-C&#x27;; bytes (hex): 536d6172744c6f636b2d41583330303b66773d322e312e343b68773d7265762d43</dd>
+          <dt>Remediation</dt><dd>Require pairing/bonding (Security Mode 1 Level 2+) before granting access to this characteristic, or move sensitive state behind an application-layer auth check performed over an authenticated channel.</dd>
+        </dl>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><span class="badge" style="background:#f57c00">Medium</span><span class="cvss">CVSS 4.3</span><h3>Unauthenticated read access on Door lock state</h3></div>
+        <p class="desc">Characteristic Door lock state (51ff12bb-3ed8-46e5-b4f9-d64e2fec021c, handle 0) permits read with no pairing, bonding, or encryption required. Any device within radio range can read its value without authentication (leaked value: &#x27;LOCKED&#x27;).</p>
+        <dl>
+          <dt>CVSS v3.1</dt><dd>4.3 &nbsp;<code>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N</code></dd>
+          <dt>Characteristic</dt><dd><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021c</code></dd>
+          <dt>Service</dt><dd><code>a07498ca-ad5b-474e-940d-16f1fbe7e8cd</code></dd>
+          <dt>Evidence</dt><dd class="evidence">properties=[&#x27;read&#x27;]; leaked value (plaintext): &#x27;LOCKED&#x27;; bytes (hex): 4c4f434b4544</dd>
+          <dt>Remediation</dt><dd>Require pairing/bonding (Security Mode 1 Level 2+) before granting access to this characteristic, or move sensitive state behind an application-layer auth check performed over an authenticated channel.</dd>
+        </dl>
+      </div>
+
+    <h2>GATT Inventory</h2>
+    <table>
+      <thead><tr><th>Characteristic UUID</th><th>Name</th><th>Properties</th><th>Value read</th></tr></thead>
+      <tbody>
+      <tr class="svc"><td colspan="4">Service a07498ca-ad5b-474e-940d-16f1fbe7e8cd &mdash; <b>SmartLock-AX300 Control Service (intentionally insecure)</b></td></tr>
+<tr><td><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021d</code></td><td>Device info / firmware</td><td>read</td><td class='val'>SmartLock-AX300;fw=2.1.4;hw=rev-C</td></tr>
+<tr><td><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021b</code></td><td>Unlock PIN (master code)</td><td>read</td><td class='val'>unlock_pin=4873</td></tr>
+<tr><td><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021c</code></td><td>Door lock state</td><td>read</td><td class='val'>LOCKED</td></tr>
+<tr><td><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021f</code></td><td>Unlock command</td><td>write</td><td class='val'>&lt;not read&gt;</td></tr>
+<tr><td><code>51ff12bb-3ed8-46e5-b4f9-d64e2fec021e</code></td><td>Wi-Fi credentials</td><td>read</td><td class='val'>wifi_ssid=Nirma_Home_5G;wifi_pass=hostel@2026</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Generated by the BLE Security Assessment Framework. All testing performed against a
+      controlled, intentionally-vulnerable target owned by the authors.
+    </footer>
+  </div>
+</body>
+</html>
